@@ -31,10 +31,10 @@ export default function Header() {
     }
 
   return (
-    <header className=" h-14 px-4 flex justify-between items-center shadow-md">
+    <header className=" h-14 px-4 flex justify-between items-center shadow-md sticky top-0 left-0 bg-stone-50">
 
         {/* Logo */}
-        <h1 className={` ${logoFont.className} text-2xl font-semibold text-teal-950 flex items-center gap-1.5`}>
+        <h1 className={` ${logoFont.className} text-2xl font-semibold text-teal-900 flex items-center gap-1.5`}>
             <GiArchiveRegister/> Build Ledger
         </h1>
 

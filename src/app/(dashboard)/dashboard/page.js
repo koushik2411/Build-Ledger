@@ -1,31 +1,33 @@
+import { getCurrentUser } from "@/lib/auth";
+import { Suspense } from "react";
+import { connection } from "next/server";
+import Welcome from "@/components/dashboard/Welcome";
+import CategoryCards from "@/components/dashboard/CategoryCards";
 
-export default function Dashboard({ user }) {
+export async function DashboardContent() {
+
+    await connection();
+    const user = await getCurrentUser();
 
     return (
         <main className=" p-4">
 
             {/* - - - Welcome Section - - - */}
-            <div>
-                
-                <h1>
-                    Hello <span>{user?.name}</span>
-                </h1>
-
-                <p>
-                    Welcome to Build Ledger, your digital ledger for maintaining your construction expenses at your <span>{}</span>.
-                </p>
-            </div>
+            <Welcome name={user?.name}/>
 
 
-            {/* - - - Expense till now - - - */}
-
-
-            {/* - - - Search bar - - - */}
-
-
-            {/* - - - Category Cards - - - */}
+            {/* - - - Search bar & Category Cards - - - */}
+            <CategoryCards/>
 
 
         </main>
+    )
+}
+
+export default function Dashboard() {
+    return (
+        <Suspense fallback={<div className=" min-h-screen flex items-center justify-center text-2xl">Almost done...</div>}>
+            <DashboardContent/>
+        </Suspense>
     )
 }
