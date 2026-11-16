@@ -22,7 +22,7 @@ const expenseSchema = new mongoose.Schema(
 
         type: {
             type: String,
-            enum: ["material", "labour", "other"],
+            enum: ["material", "contractor", "labour", "transport", "food", "other"],
             required: true,
         },
 
@@ -64,8 +64,20 @@ const expenseSchema = new mongoose.Schema(
 
         paymentMethod: {
             type: String,
-            enum: ["cash", "upi", "bank", "other"],
+            enum: ["cash", "upi", "cheque", "other"],
             default: "cash",
+        },
+
+        paymentStatus: {
+            type: String,
+            enum: ["paid", "due", "partial"],
+            default: "due",
+            required: true,
+        },
+
+        paymentDate: {
+            type: String,
+            default: "",
         },
 
         vendor: {
@@ -115,9 +127,7 @@ const expenseSchema = new mongoose.Schema(
     }
 );
 
-expenseSchema.index({ householdId: 1, date: -1 });
-
-expenseSchema.index({ householdId: 1, type: 1, category: 1 });
+expenseSchema.index({ householdId: 1, date: -1, category: 1, createdAt: -1 });
 
 const ExpenseModel = mongoose.models.Expense || mongoose.model("Expense", expenseSchema);
 

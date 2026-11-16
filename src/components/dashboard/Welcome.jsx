@@ -5,8 +5,9 @@ import { FaHome, FaRupeeSign } from "react-icons/fa";
 import { FaHandsPraying } from "react-icons/fa6";
 import { GiExpense } from "react-icons/gi";
 
-export default function Welcome({ name }) {
+export default function Welcome({ name, totalExpenses = 0 }) {
 
+    const formattedTotal = Number(totalExpenses).toLocaleString("en-IN");
     return (
 
         <div className=" max-w-7xl mx-auto md:py-8 flex flex-col lg:flex-row gap-4 justify-center">
@@ -53,7 +54,7 @@ export default function Welcome({ name }) {
 
                     <h1 className=" text-2xl text-rose-600 font-bold flex items-center gap-1">
 
-                        <FaRupeeSign/> 14610/-
+                        <FaRupeeSign/> {formattedTotal}/-
                     </h1>
 
                 </div>

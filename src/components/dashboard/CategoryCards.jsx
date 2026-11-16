@@ -36,13 +36,13 @@ export default function CategoryCards() {
                     filteredCategories.map((item, index) => (
                         <Link
                           key={index}
-                          href={item.path}
+                          href={`/category/${item.path}`}
                         >
 
                             <motion.div
                               initial={{ y: 50, opacity: 0 }}
                               whileInView={{ y: 0, opacity: 1 }}
-                              transition={{ duration: 0.7 }}
+                              transition={{ duration: 0.7, delay: index * 0.05 }}
                               viewport={{ once: false }}
                               className={` p-5 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-md active:scale-[0.97] hover:scale-[1.02] ${item.cardColors}`}
                             >
