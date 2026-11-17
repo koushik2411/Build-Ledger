@@ -270,7 +270,7 @@ export default function ExpenseDetailsModal({
           <div className="flex items-center justify-between rounded-xl bg-linear-to-b from-teal-100 to-teal-200 p-4 shadow-md">
             <span className="font-semibold text-teal-700">Total Expense</span>
             <span className="text-lg font-bold text-teal-900">
-              {currency(expense.total)}
+              {currency(expense.total)}/-
             </span>
           </div>
 
