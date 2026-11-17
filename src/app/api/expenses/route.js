@@ -30,6 +30,7 @@ export async function POST(request) {
             paymentMethod,
             paymentStatus,
             paymentDate,
+            paidAmount,
             vendor,
             notes,
         } = body;
@@ -52,14 +53,21 @@ export async function POST(request) {
         const numericAmount = Number(amount);
         const numericQuantity = Number(quantity || 0);
         const numericRate = Number(rate || 0);
+        const numericPaidAmount = Number(paidAmount || 0);
 
+        // Payment status validation
+        if (!["paid", "partial", "due"].includes(paymentStatus)) {
+            return NextResponse.json(
+                { message: "Invalid payment status." },
+                { status: 400 }
+            );
+        }
+
+        // Initial paid amount validation
         if (
-            !Number.isFinite(numericAmount) ||
-            numericAmount <= 0 ||
-            !Number.isFinite(numericQuantity) ||
-            numericQuantity < 0 ||
-            !Number.isFinite(numericRate) ||
-            numericRate < 0
+            !Number.isFinite(numericPaidAmount) ||
+            numericPaidAmount < 0 ||
+            numericPaidAmount > numericAmount
         ) {
             return NextResponse.json(
                 { message: "Please enter valid numeric values." },
@@ -67,8 +75,23 @@ export async function POST(request) {
             );
         }
 
+        // Validate payment status against paid amount
         if (
-            paymentStatus === "paid" && (
+            (paymentStatus === "due" && numericPaidAmount !== 0) ||
+            (paymentStatus === "paid" && numericPaidAmount !== numericAmount) ||
+            (paymentStatus === "partial" && 
+                (numericPaidAmount <= 0 || numericPaidAmount >= numericAmount)
+            )
+        ) {
+            return NextResponse.json(
+                { message: "Payment amount does not match payment status." },
+                { status: 400 }
+            )
+        }
+
+        // Payment date validation
+        if (
+            numericPaidAmount > 0 && (
                 !paymentDate ||
                 !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate) ||
                 paymentDate > new Date().toISOString().slice(0, 10)
@@ -93,10 +116,21 @@ export async function POST(request) {
             description: description || "",
             quantity: numericQuantity,
             unit: unit || "",
+            rate: numericRate,
             amount: numericAmount,
             paymentMethod,
             paymentStatus,
-            paymentDate: paymentStatus === "paid" ? paymentDate : "",
+            paymentDate: numericPaidAmount > 0 ? paymentDate : "",
+            payments: numericPaidAmount > 0
+                ? [
+                    {
+                        amount: numericPaidAmount,
+                        paymentDate,
+                        paymentMethod,
+                        notes: "",
+                    },
+                ]
+                : [],
             vendor: vendor || "",
             notes: notes || "",
         });

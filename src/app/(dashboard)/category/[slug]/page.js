@@ -67,6 +67,13 @@ async function CategoryContent({ params }) {
             vendor: expense.vendor,
             paymentStatus: expense.paymentStatus || "unrecorded",
             paymentDate: expense.paymentDate || "",
+            payments: expense.payments?.map((payment) => ({
+                _id: payment._id?.toString(),
+                amount: payment.amount,
+                paymentDate: payment.paymentDate,
+                paymentMethod: payment.paymentMethod,
+                notes: payment.notes,
+            })) || [],
             notes: expense.notes,
         });
     });
@@ -93,7 +100,7 @@ async function CategoryContent({ params }) {
     const currency = new Intl.NumberFormat("en-IN", {
         style: "currency",
         currency: "INR",
-        maximumFractionDigits: 2,
+        maximumFractionDigits: 0,
     })
 
     return (
@@ -141,7 +148,7 @@ async function CategoryContent({ params }) {
                         </p>
 
                         <h1 className=" flex items-center gap-1 text-2xl font-semibold text-teal-900">
-                            <FaIndianRupeeSign/> {currency.format(totalAmount).replace("₹", "")}
+                            <FaIndianRupeeSign/> {currency.format(totalAmount).replace("₹", "")}/-
                         </h1>
 
                         <p className=" text-xs text-gray-600">

@@ -13,15 +13,22 @@ async function AuthenticatedDashboard({ children }) {
         redirect("/login");
     }
 
-    return children;
+    return (
+        <>
+          <Header
+            name={user.name}
+            email={user.email}
+          />
+
+          {children}
+        </>
+    );
 }
 
 export default function DashboardLayout({ children }) {
     return (
         <Suspense fallback={<div className=" min-h-screen flex items-center justify-center text-2xl">Loading...</div>}>
             <AuthenticatedDashboard>
-
-                <Header/>
 
                 {children}
                 

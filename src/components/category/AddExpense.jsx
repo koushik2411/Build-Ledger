@@ -27,6 +27,7 @@ const initialForm = {
     paymentMethod: "cash",
     paymentStatus: "due",
     paymentDate: "",
+    paidAmount: "",
     vendor: "",
     notes: "",
 };
@@ -39,6 +40,12 @@ export default function AddExpense() {
     const [formData, setFormData] = useState(initialForm);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    // Due Calculation
+    const dueAmount = Math.max(
+        0,
+        Number(formData.amount || 0) - Number(formData.paidAmount || 0)
+    );
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,12 +86,20 @@ export default function AddExpense() {
 
         const payload = {
             ...formData,
+
             quantity: Number(formData.quantity) || 0,
             rate: Number(formData.rate) || 0,
             amount: Number(formData.amount),
-            paymentDate: formData.paymentStatus === "paid"
-              ? formData.paymentDate
-              : "",
+
+            paidAmount: formData.paymentStatus === "paid"
+                ? Number(formData.amount)
+                : formData.paymentStatus === "partial"
+                    ? Number(formData.paidAmount)
+                    : 0,
+
+            paymentDate: ["paid", "partial"].includes(formData.paymentStatus)
+                ? formData.paymentDate
+                : "",
         }
 
         try {
@@ -324,6 +339,8 @@ export default function AddExpense() {
                                     <option value="kg">Kilogram (kg)</option>
                                     <option value="ltr">Litre (ltr)</option>
                                     <option value="bag">Bag</option>
+                                    <option value="bottle">Bottle</option>
+                                    <option value="piece">Piece</option>
                                     <option value="tempo">Tempo</option>
                                     <option value="tractor">Tractor</option>
                                     <option value="truck">Truck</option>
@@ -335,7 +352,7 @@ export default function AddExpense() {
                             {/* Rate */}
                             <div className=" flex flex-col gap-1.5">
                                 <label>
-                                    Rate
+                                    Rate (₹)
                                 </label>
 
                                 <input
@@ -354,7 +371,7 @@ export default function AddExpense() {
                             {/* Total Amount */}
                             <div className=" flex flex-col gap-1.5">
                                 <label>
-                                    Total Amount
+                                    Total Amount (₹)
                                 </label>
 
                                 <input
@@ -426,22 +443,62 @@ export default function AddExpense() {
                             </div>
 
                             {/* Payment Date */}
-                            <div className=" flex flex-col gap-1.5">
-                                <label>
-                                    Payment Date
-                                </label>
+                            {["paid", "partial"].includes(formData.paymentStatus) && (
+                                <div className=" flex flex-col gap-1.5">
+                                    <label>
+                                        Payment Date
+                                    </label>
 
-                                <input
-                                  type="date"
-                                  name="paymentDate"
-                                  id="paymentDate"
-                                  value={formData.paymentDate}
-                                  onChange={handleChange}
-                                  max={getToday()}
-                                  required
-                                  className=" border p-2 rounded-lg"
-                                />
-                            </div>
+                                    <input
+                                      type="date"
+                                      name="paymentDate"
+                                      id="paymentDate"
+                                      value={formData.paymentDate}
+                                      onChange={handleChange}
+                                      max={getToday()}
+                                      required
+                                      className=" border p-2 rounded-lg"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Partial Payment */}
+                            {formData.paymentStatus === "partial" ? (
+                                <div>
+
+                                    <div className=" flex flex-col gap-1.5">
+                                        <label>
+                                            Paid Amount (₹)
+                                        </label>
+
+                                        <input
+                                          type="number"
+                                          name="paidAmount"
+                                          id="paidAmount"
+                                          value={formData.paidAmount}
+                                          onChange={handleChange}
+                                          min="0"
+                                          max={formData.amount}
+                                          step="0.01"
+                                          placeholder="Enter paid amount"
+                                          className=" border p-2 rounded-lg"
+                                        />
+                                    </div>
+
+                                    <div className=" flex flex-col gap-1.5">
+                                        <label>
+                                            Due Amount
+                                        </label>
+
+                                        <input
+                                          type="number"
+                                          value={dueAmount}
+                                          readOnly
+                                          className=" border p-2 rounded-lg"
+                                        />
+                                    </div>
+                                </div>
+                            ) : ""}
                         </div>
 
 

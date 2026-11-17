@@ -14,14 +14,17 @@ function hasInvitationKey(key) {
 
 function isValidInvitationKey(inputKey, storedHash) {
   if (!inputKey || !storedHash) {
-    const inputHash = hasInvitationKey(inputKey);
-
-    const savedHash = Buffer.from(storedHash, "hex");
-
-    if (inputHash.length !== savedHash.length) return false;
-
-    return timingSafeEqual(inputHash, savedHash);
+    return false;
   }
+
+  const inputHash = hasInvitationKey(inputKey);
+  const savedHash = Buffer.from(storedHash, "hex");
+
+  if (inputHash.length !== savedHash.length) {
+    return false;
+  }
+
+  return timingSafeEqual(inputHash, savedHash);
 }
 
 export async function POST(request) {
@@ -84,12 +87,24 @@ export async function POST(request) {
 
     // Find household and retrieve its invitation key hash
     const households = await HouseholdModel.find()
-      .select("+invitationKeyHash")
-      .lean();
+    .select("+invitationKeyHash")
+    .lean();
 
-    const household = households.find((item) =>
-      isValidInvitationKey(invitationKey.trim(), item.invitationKeyHash),
-    );
+const inputKey = invitationKey.trim();
+
+const inputHash = hasInvitationKey(inputKey).toString("hex");
+
+console.log("Households found:", households.length);
+console.log("Input key length:", inputKey.length);
+console.log("Stored hash exists:", Boolean(households[0]?.invitationKeyHash));
+console.log(
+    "Hash matches:",
+    households.some((item) => item.invitationKeyHash === inputHash)
+);
+
+const household = households.find((item) =>
+    isValidInvitationKey(inputKey, item.invitationKeyHash)
+);
 
     if (!household) {
       return NextResponse.json(

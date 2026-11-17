@@ -14,7 +14,7 @@ export default function ExpenseHistory({ history = [] }) {
         new Intl.NumberFormat("en-IN", {
             style: "currency",
             currency: "INR",
-            maximumFractionDigits: 2,
+            maximumFractionDigits: 0,
         }).format(amount || 0);
 
     const formatDate = (date) => {
@@ -136,7 +136,7 @@ export default function ExpenseHistory({ history = [] }) {
 
                                     <h3 className="flex items-center gap-2 text-2xl font-semibold text-teal-900">
                                         <FaIndianRupeeSign />
-                                        {currency(item.total).replace("₹", "")}
+                                        {currency(item.total).replace("₹", "")}/-
                                     </h3>
                                 </div>
 

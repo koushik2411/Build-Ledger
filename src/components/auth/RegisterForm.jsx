@@ -55,7 +55,7 @@ export default function RegisterForm() {
             return;
         }
 
-        if (password.length <8) {
+        if (password.length < 8) {
             setError("Password must contain at least 8 characters.")
             return;
         }
@@ -80,7 +80,10 @@ export default function RegisterForm() {
             firebaseUser = userCredential.user;
 
             // Get firebase id token
-            const idToken = await fetch("/api/auth/register", {
+            const idToken =await firebaseUser.getIdToken();
+
+            // Send registration request 
+            const response = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

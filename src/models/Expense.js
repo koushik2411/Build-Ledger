@@ -59,7 +59,12 @@ const expenseSchema = new mongoose.Schema(
         amount: {
             type: Number,
             required: true,
-            min: 0,
+            min: 0.01,
+        },
+
+        paymentDate: {
+            type: String,
+            required: true,
         },
 
         paymentMethod: {
@@ -73,11 +78,6 @@ const expenseSchema = new mongoose.Schema(
             enum: ["paid", "due", "partial"],
             default: "due",
             required: true,
-        },
-
-        paymentDate: {
-            type: String,
-            default: "",
         },
 
         vendor: {
