@@ -89,7 +89,7 @@ export default function ExpenseDetailsModal({
             <p className="text-sm text-teal-700">Total expenditure</p>
 
             <h3 className="text-2xl font-bold text-teal-900">
-              {currency(expense.total)}
+              {currency(expense.total)}/-
             </h3>
           </div>
 
@@ -182,7 +182,7 @@ export default function ExpenseDetailsModal({
                           </p>
 
                           <p className=" text-emerald-700 font-semibold">
-                            {currency(paidAmount)}
+                            {currency(paidAmount)}/-
                           </p>
 
                         </div>
@@ -194,7 +194,7 @@ export default function ExpenseDetailsModal({
                           </p>
 
                           <p className=" text-red-700 font-semibold">
-                            {currency(dueAmount)}
+                            {currency(dueAmount)}/-
                           </p>
 
                         </div>
