@@ -63,14 +63,27 @@ export default function LoginForm() {
                 body: JSON.stringify({ idToken }),
             });
 
-            const result = await response.json();
+            const responseText = await response.text();
+
+            let result = {};
+
+            try {
+                result = responseText ? JSON.parse(responseText) : {};
+            } catch {
+                console.error("Invalid API response:", responseText);
+                throw new Error("Server returned an invalid response.");
+            }
 
             if (!response.ok) {
                 await signOut(auth);
-
                 throw new Error(
                     result.message || "Unable to create login session."
-                );
+                )
+            }
+
+            if (!result.success) {
+                await signOut(auth);
+                throw new Error(result.message || "Login session was not created.");
             }
 
             // Navigate to dashboard
