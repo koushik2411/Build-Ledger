@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "firebase": "^13.3.0",
-    "firebase-admin": "^14.5.1",
+    "firebase-admin": "^13.10.0",
     "framer-motion": "^14.12.0",
     "mongoose": "^9.12.1",
     "next": "16.4.6",
